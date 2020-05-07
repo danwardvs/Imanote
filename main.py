@@ -1,29 +1,10 @@
 from PIL import Image
 from enum import Enum
-import string
 
 class Colour(Enum):
     RED = 0
     GREEN = 1
     BLUE = 2
-
-def pixels(path,channel):
-    im = Image.open(path)
-    rgb_im = im.convert('RGB')
-    width,height = rgb_im.size
-
-    current_bit = ""
-    bit_count = 0
-    for i in range(0,width):
-        for j in range(0,height):
-            pixel = list(rgb_im.getpixel((j, i)))
-
-            if pixel[channel] % 2 == 0:
-                print('1',end='')
-            else:
-                print('0',end='')
-        print()
-
 
 def read(path,note_path,channel):
 
@@ -36,6 +17,7 @@ def read(path,note_path,channel):
     current_bit = ""
     bit_count = 0
     for i in range(0,height):
+        stop_char=False
         for j in range(0,width):
             pixel = list(rgb_im.getpixel((j, i)))
 
@@ -51,13 +33,13 @@ def read(path,note_path,channel):
                 if new_chr != ">":
                     output+=new_chr
                 else:
-                    file1 = open(note_path,"a+")                 
-                    file1.write(output)
-                    file1.close()
-                    print("hit stop character")
-                    return
+                    stop_char = True
+                    break
+                
                 current_bit=""
-
+        if stop_char:
+            break
+    
     file1 = open(note_path,"a+")                 
     file1.write(output)
     file1.close()
@@ -114,7 +96,7 @@ def write(file,note,channel):
 
 f = open("p_1.txt", "r")
 note = f.read()
-write("house_s.png", note,Colour.RED.value)
+write("blanktest.png", note,Colour.RED.value)
 
 f = open("p_2.txt", "r")
 note = f.read()
