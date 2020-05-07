@@ -7,9 +7,7 @@ class Colour(Enum):
     GREEN = 1
     BLUE = 2
 
-def read(path,channel):
-    output = ""
-
+def pixels(path,channel):
     im = Image.open(path)
     rgb_im = im.convert('RGB')
     width,height = rgb_im.size
@@ -21,6 +19,27 @@ def read(path,channel):
             pixel = list(rgb_im.getpixel((j, i)))
 
             if pixel[channel] % 2 == 0:
+                print('1',end='')
+            else:
+                print('0',end='')
+        print()
+
+
+def read(path,note_path,channel):
+
+    output = ""
+
+    im = Image.open(path)
+    rgb_im = im.convert('RGB')
+    width,height = rgb_im.size
+    print(width,height)
+    current_bit = ""
+    bit_count = 0
+    for i in range(0,height):
+        for j in range(0,width):
+            pixel = list(rgb_im.getpixel((j, i)))
+
+            if pixel[channel] % 2 == 0:
                 current_bit+='1'
             else:
                 current_bit+='0'
@@ -28,19 +47,20 @@ def read(path,channel):
             if bit_count == 8:
                 bit_count = 0
                 new_chr = chr(int(current_bit,2))
-
-
-
+            
                 if new_chr != ">":
                     output+=new_chr
                 else:
-                    file1 = open("myfile.txt","a")                 
-                    file1.writelines(output) 
+                    file1 = open(note_path,"a+")                 
+                    file1.write(output)
+                    file1.close()
+                    print("hit stop character")
                     return
                 current_bit=""
 
-    file1 = open("myfile.txt","a")                 
-    file1.writelines(output) 
+    file1 = open(note_path,"a+")                 
+    file1.write(output)
+    file1.close()
     
 
 def write(file,note,channel):
@@ -92,9 +112,25 @@ def write(file,note,channel):
 
 
 
-f = open("pride_a.txt", "r")
-note = f.read() 
-write("house.png", note,Colour.BLUE.value)
-read("write.png",Colour.BLUE.value)
+f = open("p_1.txt", "r")
+note = f.read()
+write("house_s.png", note,Colour.RED.value)
+
+f = open("p_2.txt", "r")
+note = f.read()
+write("write.png", note,Colour.GREEN.value)
+f = open("p_3.txt", "r")
+note = f.read()
+write("write.png", note,Colour.BLUE.value)
+
+
+
+output = "output.txt"
+open('output.txt', 'w').close()
+#pixels("write.png",Colour.RED.value)
+read("write.png",output,Colour.RED.value)
+read("write.png",output,Colour.GREEN.value)
+read("write.png",output,Colour.BLUE.value)
+
 
         
