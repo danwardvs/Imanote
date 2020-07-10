@@ -1,19 +1,21 @@
 from PIL import Image
 from enum import Enum
+import math
+
+STOP_CHARACTER = ">"
 
 class Colour(Enum):
     RED = 0
     GREEN = 1
     BLUE = 2
 
-def read(path,note_path,channel):
+def read_data(path,note_path,channel):
 
     output = ""
 
     im = Image.open(path)
     rgb_im = im.convert('RGB')
     width,height = rgb_im.size
-    print(width,height)
     current_bit = ""
     bit_count = 0
     for i in range(0,height):
@@ -30,7 +32,7 @@ def read(path,note_path,channel):
                 bit_count = 0
                 new_chr = chr(int(current_bit,2))
             
-                if new_chr != ">":
+                if new_chr != STOP_CHARACTER:
                     output+=new_chr
                 else:
                     stop_char = True
@@ -45,8 +47,8 @@ def read(path,note_path,channel):
     file1.close()
     
 
-def write(file,note,channel):
-    im = Image.open(file)
+def write_data(input_path,output_path,note,channel):
+    im = Image.open(input_path)
 
     newimdata = []
    
@@ -90,29 +92,51 @@ def write(file,note,channel):
     newim = Image.new(im.mode,im.size)
     newim.putdata(newimdata)
 
-    newim.save("write.png")
+    newim.save(output_path)
+
+def unicode_to_ascii(text):
+
+    pairs = [["“","\""],["”","\""],["’","'"],["—","-"]]
+
+    for pair in pairs:
+        text=text.replace(pair[0],pair[1])
+    return text
 
 
+def split_text(text):
 
-f = open("p_1.txt", "r")
-note = f.read()
-write("blanktest.png", note,Colour.RED.value)
+    text = unicode_to_ascii(text)
 
-f = open("p_2.txt", "r")
-note = f.read()
-write("write.png", note,Colour.GREEN.value)
-f = open("p_3.txt", "r")
-note = f.read()
-write("write.png", note,Colour.BLUE.value)
+    text_length = math.floor(len(text)/3)
+
+    return [text[0:text_length]+STOP_CHARACTER,text[text_length:text_length*2]+STOP_CHARACTER,text[text_length*2:-1]+STOP_CHARACTER] 
 
 
+def write(input_text_path,input_image_path,output_image_path):
 
-output = "output.txt"
-open('output.txt', 'w').close()
-#pixels("write.png",Colour.RED.value)
-read("write.png",output,Colour.RED.value)
-read("write.png",output,Colour.GREEN.value)
-read("write.png",output,Colour.BLUE.value)
+    f = open(input_text_path, "r")
+    note = f.read()
+    note_split = split_text(note)
+    print("bum")
+    print(len(note_split[0]))
+    print(len(note_split[1]))
+    print(len(note_split[2]))
+
+    write_data(input_image_path,output_image_path, note_split[0],Colour.RED.value)
+
+    write_data(output_image_path,output_image_path, note_split[1],Colour.GREEN.value)
+
+    write_data(output_image_path,output_image_path, note_split[2],Colour.BLUE.value)
+
+def read(input_path,output_path):
+
+
+    open(output_path, 'w').close()
+    read_data(input_path,output_path,Colour.RED.value)
+    read_data(input_path,output_path,Colour.GREEN.value)
+    read_data(input_path,output_path,Colour.BLUE.value)
 
 
         
+write("pride_raw.txt","house_s.png","newWrite.png")
+read("newWrite.png","newOutput.txt")
