@@ -46,6 +46,6 @@ def read(path,note_path,channel):
 output = "output.txt"
 open('output.txt', 'w').close()
 #pixels("write.png",Colour.RED.value)
-read("write.png",output,Colour.RED.value)
-read("write.png",output,Colour.GREEN.value)
-read("write.png",output,Colour.BLUE.value)
+read("Example.png",output,Colour.RED.value)
+read("Example.png",output,Colour.GREEN.value)
+read("Example.png",output,Colour.BLUE.value)

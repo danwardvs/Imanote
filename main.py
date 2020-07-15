@@ -42,9 +42,9 @@ def read_data(path,note_path,channel):
         if stop_char:
             break
     
-    file1 = open(note_path,"a+")                 
-    file1.write(output)
-    file1.close()
+    file = open(note_path,"a+")                 
+    file.write(output)
+    file.close()
     
 
 def write_data(input_path,output_path,note,channel):
@@ -94,29 +94,29 @@ def write_data(input_path,output_path,note,channel):
 
     newim.save(output_path)
 
-def unicode_to_ascii(text):
+def clean(note):
 
     pairs = [["“","\""],["”","\""],["’","'"],["—","-"]]
 
     for pair in pairs:
-        text=text.replace(pair[0],pair[1])
-    return text
+        note=note.replace(pair[0],pair[1])
+    return note
 
 
-def split_text(text):
+def split_note(note):
 
-    text = unicode_to_ascii(text)
+    note = clean(note)
 
-    text_length = math.floor(len(text)/3)
+    note_length = math.floor(len(note)/3)
 
-    return [text[0:text_length]+STOP_CHARACTER,text[text_length:text_length*2]+STOP_CHARACTER,text[text_length*2:-1]+STOP_CHARACTER] 
+    return [note[0:note_length]+STOP_CHARACTER,note[note_length:note_length*2]+STOP_CHARACTER,note[note_length*2:-1]+STOP_CHARACTER] 
 
 
 def write(input_text_path,input_image_path,output_image_path):
 
     f = open(input_text_path, "r")
     note = f.read()
-    note_split = split_text(note)
+    note_split = split_note(note)
     print("bum")
     print(len(note_split[0]))
     print(len(note_split[1]))
@@ -130,13 +130,10 @@ def write(input_text_path,input_image_path,output_image_path):
 
 def read(input_path,output_path):
 
-
     open(output_path, 'w').close()
     read_data(input_path,output_path,Colour.RED.value)
     read_data(input_path,output_path,Colour.GREEN.value)
     read_data(input_path,output_path,Colour.BLUE.value)
-
-
         
-write("pride_raw.txt","house_s.png","newWrite.png")
+write("pride_raw.txt","house_broken.png","newWrite.png")
 read("newWrite.png","newOutput.txt")
