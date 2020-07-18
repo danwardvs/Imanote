@@ -116,17 +116,16 @@ def write(input_text_path,input_image_path,output_image_path):
 
     f = open(input_text_path, "r")
     note = f.read()
-    note_split = split_note(note)
-    print("bum")
-    print(len(note_split[0]))
-    print(len(note_split[1]))
-    print(len(note_split[2]))
+    
+    if check_size(note,input_image_path):
 
-    write_data(input_image_path,output_image_path, note_split[0],Colour.RED.value)
-
-    write_data(output_image_path,output_image_path, note_split[1],Colour.GREEN.value)
-
-    write_data(output_image_path,output_image_path, note_split[2],Colour.BLUE.value)
+        note_split = split_note(note)
+   
+        write_data(input_image_path,output_image_path, note_split[0],Colour.RED.value)
+        write_data(output_image_path,output_image_path, note_split[1],Colour.GREEN.value)
+        write_data(output_image_path,output_image_path, note_split[2],Colour.BLUE.value)
+    else:
+        print("Image is too small to contain the text")
 
 def read(input_path,output_path):
 
@@ -134,6 +133,18 @@ def read(input_path,output_path):
     read_data(input_path,output_path,Colour.RED.value)
     read_data(input_path,output_path,Colour.GREEN.value)
     read_data(input_path,output_path,Colour.BLUE.value)
-        
+
+
+def check_size(note,input_image_path):
+
+    im = Image.open(input_image_path)
+    width,height = im.size
+
+    return (len(note)*8)/3 > width*height
+
+    
+
 write("pride_raw.txt","house_broken.png","newWrite.png")
 read("newWrite.png","newOutput.txt")
+
+# TODO note as output file, file as input file
