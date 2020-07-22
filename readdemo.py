@@ -1,5 +1,8 @@
 from PIL import Image
 from enum import Enum
+import io
+
+STOP_CHARACTER = ">"
 
 class Colour(Enum):
     RED = 0
@@ -8,15 +11,17 @@ class Colour(Enum):
 
 def read(path,note_path,channel):
 
+    print("Reading channel " + str(channel) +". (0=Red,1=Green,2=Blue)")
+
     output = ""
 
     im = Image.open(path)
     rgb_im = im.convert('RGB')
     width,height = rgb_im.size
-    print(width,height)
     current_bit = ""
     bit_count = 0
     for i in range(0,height):
+        stop_char=False
         for j in range(0,width):
             pixel = list(rgb_im.getpixel((j, i)))
 
@@ -29,23 +34,27 @@ def read(path,note_path,channel):
                 bit_count = 0
                 new_chr = chr(int(current_bit,2))
             
-                if new_chr != ">":
+                if new_chr != STOP_CHARACTER:
                     output+=new_chr
                 else:
-                    file1 = open(note_path,"a+")                 
-                    file1.write(output)
-                    file1.close()
-                    print("hit stop character")
-                    return
+                    stop_char = True
+                    break
+                
                 current_bit=""
+        if stop_char:
+            break
+    
+    print("Writing " +str(len(output)) + " characters to " + note_path + " from image " + path)
 
-    file1 = open(note_path,"a+")                 
-    file1.write(output)
-    file1.close()
+    with io.open(note_path,"a+",encoding="utf-8") as f:
+        f.write(output)
+        f.close()
 
 output = "output.txt"
 open('output.txt', 'w').close()
-#pixels("write.png",Colour.RED.value)
+
 read("Example.png",output,Colour.RED.value)
 read("Example.png",output,Colour.GREEN.value)
 read("Example.png",output,Colour.BLUE.value)
+
+print("Write complete. Outputted text is at " + output)

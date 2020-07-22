@@ -1,6 +1,7 @@
 from PIL import Image
 from enum import Enum
 import math
+import io
 
 STOP_CHARACTER = ">"
 
@@ -42,9 +43,9 @@ def read_data(path,note_path,channel):
         if stop_char:
             break
     
-    file = open(note_path,"a+")                 
-    file.write(output)
-    file.close()
+    with io.open(note_path,"a+",encoding="utf-8") as f:
+        f.write(output)
+        f.close()
     
 
 def write_data(input_path,output_path,note,channel):
@@ -117,15 +118,23 @@ def write(input_text_path,input_image_path,output_image_path):
     f = open(input_text_path, "r")
     note = f.read()
     
-    if check_size(note,input_image_path):
+    correct_size = check_size(note,input_image_path)
+
+    if correct_size:
 
         note_split = split_note(note)
-   
+        print("Writing red channel to "+ output_image_path)
         write_data(input_image_path,output_image_path, note_split[0],Colour.RED.value)
+        
+        print("Writing green channel to "+ output_image_path)
         write_data(output_image_path,output_image_path, note_split[1],Colour.GREEN.value)
+        
+        print("Writing blue channel to "+ output_image_path)
         write_data(output_image_path,output_image_path, note_split[2],Colour.BLUE.value)
     else:
         print("Image is too small to contain the text")
+    
+    return correct_size
 
 def read(input_path,output_path):
 
@@ -140,11 +149,11 @@ def check_size(note,input_image_path):
     im = Image.open(input_image_path)
     width,height = im.size
 
-    return (len(note)*8)/3 > width*height
-
+    return (len(note)*8)/3 < width*height
+    #return True
     
 
-write("pride_raw.txt","house_broken.png","newWrite.png")
-read("newWrite.png","newOutput.txt")
+if write("pride.txt","house_s.png","newWrite.png"):
+    read("newWrite.png","newOutput.txt")
 
 # TODO note as output file, file as input file
