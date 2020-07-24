@@ -65,27 +65,16 @@ def write_data(input_path,output_path,note,channel):
         if byte<len(ascii_note):
             char = format(ascii_note[byte],"08b")
             new_bit = char[bit_location]
-            if new_bit=="1":
-                if(color[channel]%2==0):
-                    newimdata.append(color)
-                else:
-                    new_color = list(color)
-                    if new_color[channel] == 0:
-                        new_color[channel]+=1
-                    else:
-                        new_color[channel]-=1
-                    newimdata.append(tuple(new_color))
+           
+            if( (new_bit=="1" and color[channel]%2==0) or (new_bit=="0" and color[channel]%2!=0)):
+                newimdata.append(color)
             else:
-                if(color[channel]%2!=0):
-                    newimdata.append(color)
+                new_color = list(color)
+                if new_color[channel] == 0:
+                    new_color[channel]+=1
                 else:
-                    new_color = list(color)
-                    if new_color[channel] == 0:
-                        new_color[channel]+=1
-                    else:
-                        new_color[channel]-=1
-                  
-                    newimdata.append(tuple(new_color))
+                    new_color[channel]-=1
+                newimdata.append(tuple(new_color))
 
         else:
             newimdata.append(color)
