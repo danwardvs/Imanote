@@ -19,6 +19,7 @@ def read_data(path,note_path,channel):
     width,height = rgb_im.size
     current_bit = ""
     bit_count = 0
+    
     for i in range(0,height):
         stop_char=False
         for j in range(0,width):
@@ -31,10 +32,12 @@ def read_data(path,note_path,channel):
             bit_count+=1
             if bit_count == 8:
                 bit_count = 0
+                print(current_bit)
                 new_chr = chr(int(current_bit,2))
-            
+
                 if new_chr != STOP_CHARACTER:
                     output+=new_chr
+                
                 else:
                     stop_char = True
                     break
@@ -77,7 +80,10 @@ def write_data(input_path,output_path,note,channel):
                     newimdata.append(color)
                 else:
                     new_color = list(color)
-                    new_color[channel]-=1
+                    if new_color[channel] == 0:
+                        new_color[channel]+=1
+                    else:
+                        new_color[channel]-=1
                   
                     newimdata.append(tuple(new_color))
 
@@ -104,13 +110,15 @@ def clean(note):
     return note
 
 
-def split_note(note):
+def split_note(note,add_stop_char):
+
+    ADD_STOP_CHAR = STOP_CHARACTER if add_stop_char else ""
 
     note = clean(note)
-
+  
     note_length = math.floor(len(note)/3)
-
-    return [note[0:note_length]+STOP_CHARACTER,note[note_length:note_length*2]+STOP_CHARACTER,note[note_length*2:-1]+STOP_CHARACTER] 
+    
+    return [note[0:note_length]+ADD_STOP_CHAR,note[note_length:note_length*2]+ADD_STOP_CHAR,note[note_length*2:len(note)]+ADD_STOP_CHAR] 
 
 
 def write(input_text_path,input_image_path,output_image_path):
@@ -122,7 +130,8 @@ def write(input_text_path,input_image_path,output_image_path):
 
     if correct_size:
 
-        note_split = split_note(note)
+        note_split = split_note(note,False)
+        print(note_split)
         print("Writing red channel to "+ output_image_path)
         write_data(input_image_path,output_image_path, note_split[0],Colour.RED.value)
         
@@ -149,11 +158,11 @@ def check_size(note,input_image_path):
     im = Image.open(input_image_path)
     width,height = im.size
 
-    return (len(note)*8)/3 < width*height
+    return (len(note)*8)/3 <= width*height
     #return True
     
 
-if write("pride.txt","house_s.png","newWrite.png"):
-    read("newWrite.png","newOutput.txt")
+if write("hey.txt","smalldemo.png","smalldemo_write.png"):
+    read("smalldemo_write.png","hey_output.txt")
 
 # TODO note as output file, file as input file
