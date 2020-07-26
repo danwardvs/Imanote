@@ -26,9 +26,9 @@ def read(path,note_path,channel):
             pixel = list(rgb_im.getpixel((j, i)))
 
             if pixel[channel] % 2 == 0:
-                current_bit+='1'
-            else:
                 current_bit+='0'
+            else:
+                current_bit+='1'
             bit_count+=1
             if bit_count == 8:
                 bit_count = 0

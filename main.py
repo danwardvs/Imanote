@@ -26,9 +26,9 @@ def read_data(path,note_path,channel):
             pixel = list(rgb_im.getpixel((j, i)))
 
             if pixel[channel] % 2 == 0:
-                current_bit+='1'
-            else:
                 current_bit+='0'
+            else:
+                current_bit+='1'
             bit_count+=1
             if bit_count == 8:
                 bit_count = 0
@@ -66,7 +66,7 @@ def write_data(input_path,output_path,note,channel):
             char = format(ascii_note[byte],"08b")
             new_bit = char[bit_location]
            
-            if( (new_bit=="1" and color[channel]%2==0) or (new_bit=="0" and color[channel]%2!=0)):
+            if( (new_bit=="0" and color[channel]%2==0) or (new_bit=="1" and color[channel]%2!=0)):
                 newimdata.append(color)
             else:
                 new_color = list(color)
@@ -119,7 +119,7 @@ def write(input_text_path,input_image_path,output_image_path):
 
     if correct_size:
 
-        note_split = split_note(note,False)
+        note_split = split_note(note,True)
         print(note_split)
         print("Writing red channel to "+ output_image_path)
         write_data(input_image_path,output_image_path, note_split[0],Colour.RED.value)
@@ -147,11 +147,13 @@ def check_size(note,input_image_path):
     im = Image.open(input_image_path)
     width,height = im.size
 
+    print("Text is " +str(len(note)) + " characters long. The image is " + str(width) +"*" + str(height) + " and can contain "+ str(int(width*height*3/8)) + " characters.")
+
     return (len(note)*8)/3 <= width*height
     #return True
     
 
-if write("hey.txt","smalldemo.png","smalldemo_write.png"):
-    read("smalldemo_write.png","hey_output.txt")
+if write("hey.txt","willow_demo.png","willow_write.png"):
+    read("willow_write.png","hey_output.txt")
 
 # TODO note as output file, file as input file
