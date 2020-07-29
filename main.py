@@ -32,7 +32,6 @@ def read_data(path,note_path,channel):
             bit_count+=1
             if bit_count == 8:
                 bit_count = 0
-                print(current_bit)
                 new_chr = chr(int(current_bit,2))
 
                 if new_chr != STOP_CHARACTER:
@@ -52,32 +51,34 @@ def read_data(path,note_path,channel):
     
 
 def write_data(input_path,output_path,note,channel):
-    im = Image.open(input_path)
-
-    newimdata = []
+    
+    new_image_data = []
    
-    bit_location=0
+    input_image = Image.open(input_path)
+   
     ascii_note = list(bytes(note,"utf-8"))
 
-    byte=0
-    for color in im.getdata():
+    bit_location = 0
+    byte = 0
+
+    for pixel in input_image.getdata():
         
         if byte<len(ascii_note):
             char = format(ascii_note[byte],"08b")
             new_bit = char[bit_location]
            
-            if( (new_bit=="0" and color[channel]%2==0) or (new_bit=="1" and color[channel]%2!=0)):
-                newimdata.append(color)
+            if( (new_bit=="0" and pixel[channel]%2==0) or (new_bit=="1" and pixel[channel]%2!=0)):
+                new_image_data.append(pixel)
             else:
-                new_color = list(color)
-                if new_color[channel] == 0:
-                    new_color[channel]+=1
+                new_colour = list(pixel)
+                if new_colour[channel] == 0:
+                    new_colour[channel]+=1
                 else:
-                    new_color[channel]-=1
-                newimdata.append(tuple(new_color))
+                    new_colour[channel]-=1
+                new_image_data.append(tuple(new_colour))
 
         else:
-            newimdata.append(color)
+            new_image_data.append(pixel)
         
         bit_location+=1
         if bit_location==8:
@@ -85,10 +86,10 @@ def write_data(input_path,output_path,note,channel):
             bit_location=0
         
  
-    newim = Image.new(im.mode,im.size)
-    newim.putdata(newimdata)
+    new_image = Image.new(input_image.mode,input_image.size)
+    new_image.putdata(new_image_data)
 
-    newim.save(output_path)
+    new_image.save(output_path)
 
 def clean(note):
 
@@ -120,7 +121,7 @@ def write(input_text_path,input_image_path,output_image_path):
     if correct_size:
 
         note_split = split_note(note,True)
-        print(note_split)
+
         print("Writing red channel to "+ output_image_path)
         write_data(input_image_path,output_image_path, note_split[0],Colour.RED.value)
         
@@ -150,10 +151,13 @@ def check_size(note,input_image_path):
     print("Text is " +str(len(note)) + " characters long. The image is " + str(width) +"*" + str(height) + " and can contain "+ str(int(width*height*3/8)) + " characters.")
 
     return (len(note)*8)/3 <= width*height
-    #return True
-    
 
-if write("hey.txt","willow_demo.png","willow_write.png"):
-    read("willow_write.png","hey_output.txt")
+input_image = "graphic_demo.png"
+input_text = "edgar.txt"
 
-# TODO note as output file, file as input file
+output_image = "graphic_output.png"
+output_text = "graphic_text_output.txt"
+
+if write(input_text,input_image,output_image):
+    read(output_image,output_text)
+

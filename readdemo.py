@@ -50,11 +50,14 @@ def read(path,note_path,channel):
         f.write(output)
         f.close()
 
+# Modify these to change what and where you're reading
 output = "output.txt"
+input_image = "willow_write.png"
+
 open('output.txt', 'w').close()
 
-read("Example.png",output,Colour.RED.value)
-read("Example.png",output,Colour.GREEN.value)
-read("Example.png",output,Colour.BLUE.value)
+read(input_image,output,Colour.RED.value)
+read(input_image,output,Colour.GREEN.value)
+read(input_image,output,Colour.BLUE.value)
 
 print("Write complete. Outputted text is at " + output)
