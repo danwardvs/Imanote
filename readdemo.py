@@ -2,6 +2,8 @@ from PIL import Image
 from enum import Enum
 import io
 from datetime import datetime
+import sys
+import os
 
 STOP_CHARACTER = ">"
 
@@ -40,6 +42,7 @@ def main(input_img, output_txt):
   startTime = datetime.now()
 
   print("Reading and converting image " + input_img)
+
   image = Image.open(input_img)
   rgb_image = image.convert('RGB')
 
@@ -65,7 +68,15 @@ def main(input_img, output_txt):
     f.write(final_output)
     f.close()
 
-  print("Write complete. Outputted text is at " + output_txt + ". Took " + datetime.now() - startTime )
+  print("Write complete. Outputted text is at " + output_txt + ". Took " + str(datetime.now() - startTime ))
 
-# Modify these to change what and where you're reading
-main("house_demo.png", "output.txt")
+if len(sys.argv)>1:
+
+  if os.path.isfile(sys.argv[1]):
+    main(sys.argv[1], "output.txt")
+  else:
+    print("Image path " + sys.argv[1]  + " cannot be located")
+
+
+else:
+  print("Image file must be passed as a command line argument (python3 readdemo.py puppy.png)")

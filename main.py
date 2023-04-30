@@ -152,11 +152,11 @@ def check_size(note,input_image_path):
 
     return (len(note)*8)/3 <= width*height
 
-input_image = "graphic_demo.png"
-input_text = "edgar.txt"
+input_image = "puppy.png"
+input_text = "demo/orwell.txt"
 
-output_image = "graphic_output.png"
-output_text = "graphic_text_output.txt"
+output_image = "puppy.png"
+output_text = "o.txt"
 
 if write(input_text,input_image,output_image):
     read(output_image,output_text)
