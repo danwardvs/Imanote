@@ -1,6 +1,8 @@
 from PIL import Image
 from enum import Enum
 import io
+import sys
+import os
 
 STOP_CHARACTER = ">"
 
@@ -60,6 +62,7 @@ if len(sys.argv)>1:
 
   if os.path.isfile(sys.argv[1]):
     open(output, 'w').close()
+    input_image = sys.argv[1]
 
     read(input_image,output,Colour.RED.value)
     read(input_image,output,Colour.GREEN.value)
@@ -67,7 +70,7 @@ if len(sys.argv)>1:
 
     print("Write complete. Outputted text is at " + output)
   else:
-    print("Image path " + sys.argv[1]  + " cannot be located")
+    print('Image path "' + sys.argv[1]  + '" cannot be located')
 
   
  
