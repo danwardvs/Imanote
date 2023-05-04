@@ -9,6 +9,8 @@ class Colour(Enum):
     GREEN = 1
     BLUE = 2
 
+
+
 def read(path,note_path,channel):
 
     print("Reading channel " + str(channel) +". (0=Red,1=Green,2=Blue)")
@@ -50,14 +52,29 @@ def read(path,note_path,channel):
         f.write(output)
         f.close()
 
-# Modify these to change what and where you're reading
+
 output = "output.txt"
-input_image = "willow_write.png"
 
-open('output.txt', 'w').close()
 
-read(input_image,output,Colour.RED.value)
-read(input_image,output,Colour.GREEN.value)
-read(input_image,output,Colour.BLUE.value)
+if len(sys.argv)>1:
 
-print("Write complete. Outputted text is at " + output)
+  if os.path.isfile(sys.argv[1]):
+    open(output, 'w').close()
+
+    read(input_image,output,Colour.RED.value)
+    read(input_image,output,Colour.GREEN.value)
+    read(input_image,output,Colour.BLUE.value)
+
+    print("Write complete. Outputted text is at " + output)
+  else:
+    print("Image path " + sys.argv[1]  + " cannot be located")
+
+  
+ 
+
+
+else:
+  print("Image file must be passed as a command line argument (python3 readdemo.py puppy.png)")
+
+
+
